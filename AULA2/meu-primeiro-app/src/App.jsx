@@ -9,7 +9,7 @@ function App() {
   return (
     <>
           <div class="login">
-        <img src="logo_ifrj_niteroi_vertical_png.png" alt="LogoIfrj"/>
+        <img src="../public/logo.png" alt="LogoIfrj"/>
         <div class="info">
             <p>Agora o acesso é feito com o seu <strong>CPF</strong> + <strong>senha</strong></p>
         </div>
