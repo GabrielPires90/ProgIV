@@ -1,21 +1,34 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useNavigate } from 'react-router-dom'
 import './App.css'
 
 function App() {
+  const [cpf,setCpf] = useState('')
+  const [senha,setSenha] = useState('')
+  const navigate = useNavigate()
+
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+    if (!cpf || !senha) {
+      alert ("Por favor,preencha todos os campos!")
+      return
+    }
+    console.log("Dados enviados:",{cpf,senha})
+    navigate('/dashboard')
+  }
+
 
   return (
-    <>
-          <div class="login">
+    <><form className="login" onSubmit={handleLogin}>
+        <div class="login">
         <img src="../public/logo.png" alt="LogoIfrj"/>
-        <div class="info">
+        <div classname="info">
             <p>Agora o acesso é feito com o seu <strong>CPF</strong> + <strong>senha</strong></p>
         </div>
         <div class="usuario">
-            <input type="text" placeholder="CPF (só numeros)"/>
-            <input type="password" placeholder="Senha"/>
+            <input type="number" placeholder="CPF (só numeros)" value={cpf} onChange={(e) => setCpf(e.target.value)}/>
+            <input type="password" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)}/>
             <button type="submit">Confirmar</button>
         </div>
         <div class="inferior">
@@ -23,7 +36,9 @@ function App() {
             <a href="">Esqueci o E-mail Cadastrado</a>
             <a href="">Sou responsável - Primeiro acesso</a>
         </div>
-    </div>
+      </div>
+    </form>
+          
     </>
   )
 }
