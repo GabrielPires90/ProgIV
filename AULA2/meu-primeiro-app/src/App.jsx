@@ -15,7 +15,7 @@ function App() {
       return
     }
     console.log("Dados enviados:",{cpf,senha})
-    navigate('/dashboard')
+    navigate('/dashboard', {state:{userCPF:cpf,userSenha:senha}})
   }
 
 
