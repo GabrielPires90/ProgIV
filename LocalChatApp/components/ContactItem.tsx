@@ -1,74 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 
-import { MessageBubble } from '../components/MessageBubble';
-import { InputBar } from '../components/InputBar';
-import { LanSocketService } from '../services/LanSocketService';
-
-interface Message {
-  id: string;
-  text: string;
-  isMe: boolean;
-  timestamp: string;
+interface ContactItemProps {
+  ipAddress: string;
+  onPress: () => void;
 }
 
-export const ChatScreen = ({ route }: any) => {
-  const { peerIp } = route.params || { peerIp: '255.255.255.255' };
-  const [messages, setMessages] = useState<Message[]>([]);
-  const lanService = LanSocketService.getInstance();
-
-  useEffect(() => {
-    lanService.init((msg, senderIp) => {
-      const newMessage: Message = {
-        id: Date.now().toString(),
-        text: `[${senderIp}] ${msg}`,
-        isMe: false,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages((prev) => [...prev, newMessage]);
-    });
-
-    return () => {
-      lanService.close();
-    };
-  }, []);
-
-  const handleSendMessage = (text: string) => {
-    lanService.sendMessage(text, peerIp);
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      isMe: true,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setMessages((prev) => [...prev, newMessage]);
-  };
-
+export const ContactItem: React.FC<ContactItemProps> = ({ ipAddress, onPress }) => {
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={90}
-    >
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <MessageBubble text={item.text} isMe={item.isMe} timestamp={item.timestamp} />
-        )}
-        contentContainerStyle={styles.messageList}
-      />
-      <InputBar onSend={handleSendMessage} />
-    </KeyboardAvoidingView>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <View style={styles.avatar}>
+        <Text style={styles.avatarText}>💬</Text>
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.title}>Dispositivo LAN</Text>
+        <Text style={styles.subtitle}>IP: {ipAddress}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f2f5',
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#dfe5e8',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  avatarText: {
+    fontSize: 24,
+  },
+  info: {
     flex: 1,
-    backgroundColor: '#efeae2',
   },
-  messageList: {
-    paddingVertical: 16,
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#111b21',
   },
-}); 
+  subtitle: {
+    fontSize: 14,
+    color: '#667781',
+    marginTop: 2,
+  },
+});
